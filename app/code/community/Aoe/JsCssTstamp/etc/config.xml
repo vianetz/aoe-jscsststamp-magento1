@@ -76,4 +76,12 @@
         </dev>
     </default>
 
+    <phpunit>
+        <suite>
+            <modules>
+                <Aoe_JsCssTstamp/>
+            </modules>
+        </suite>
+    </phpunit>
+
 </config>

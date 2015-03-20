@@ -1,5 +1,9 @@
 # AOE_JsCssTimestamp
 
+[![Build Status](https://travis-ci.org/AOEpeople/Aoe_Scheduler.svg)](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
+
+Author: [Fabrizio Branca](https://twitter.com/fbrnc)
+
 ## Overview
 
 This module adds the last-modified timestamp to your JS and CSS merged files to enabled browser-based caching and speed up your server.
@@ -28,8 +32,10 @@ RewriteRule .* ../get.php [L]
 If you enable one of the following in the configuration make sure to add this to your .htaccess file:
 
 - Add version to assets (gif|png|jpg)
-- Add version to assets (css)
-- Add version to assets (js)
+- Add version to assets (css) NOTE: only works with skin_css (not js_css)
+- Add version to assets (js) NOTE: only works with skin_js (not js - coming from /js)
+
+
 
 ```
 RewriteRule (.*)\.(\d{10})\.(gif|png|jpg)$ $1.$3 [L,NC]
@@ -69,6 +75,7 @@ rewrite "^/(.*)\.(\d{10})\.(gif|png|jpg)$" /$1.$3 last;
 
 #### v0.7.1
 
+- added unit tests
 - removed JSMin since it wasn't used
 - getSkinUrl now also optionally adds the version key to image assets
 
