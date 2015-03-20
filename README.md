@@ -67,11 +67,16 @@ rewrite "^/(.*)\.(\d{10})\.(gif|png|jpg)$" /$1.$3 last;
 
 ## Release notes
 
-#### v 0.7.0
+#### v0.7.1
+
+- removed JSMin since it wasn't used
+- getSkinUrl now also optionally adds the version key to image assets
+
+#### v0.7.0
 
 - Allowing to add timestamps to js and css files too now. Feature "inspired" by [Tymek's](https://github.com/tmotyl) [commit](https://github.com/macopedia/Aoe_JsCssTstamp/commit/5471779099fea1c259c49e89ae8308de4a8138e9).
 
-#### v 0.6.0
+#### v0.6.0
 
 - CDN support is removed. Use https://github.com/AOEpeople/Aoe_MergedJsCssCdn if you need CDN support.
 
