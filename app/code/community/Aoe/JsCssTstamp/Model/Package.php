@@ -336,6 +336,11 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
             if (preg_match('/(.*)\.(js)$/i', $result, $matches)) {
                 $result = $matches[1] . '.' . $this->getVersionKey() . '.' . $matches[2];
             }
+        } elseif ($this->addTstampToAssets) {
+            $matches = array();
+            if (preg_match('/(.*)\.(gif|png|jpg)$/i', $result, $matches)) {
+                $result = $matches[1] . '.' . $this->getVersionKey() . '.' . $matches[2];
+            }
         }
 
         return $result;
