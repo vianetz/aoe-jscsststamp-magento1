@@ -331,17 +331,29 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
             if (preg_match('/(.*)\.(css)$/i', $result, $matches)) {
                 $result = $matches[1] . '.' . $this->getVersionKey() . '.' . $matches[2];
             }
+
+            if ($this->cssProtocolRelativeUris) {
+                $result = $this->convertToProtocolRelativeUri($result);
+            }
         }
         if ($this->addTstampToAssetsJs) {
             $matches = array();
             if (preg_match('/(.*)\.(js)$/i', $result, $matches)) {
                 $result = $matches[1] . '.' . $this->getVersionKey() . '.' . $matches[2];
             }
+
+            if ($this->jsProtocolRelativeUris) {
+                $result = $this->convertToProtocolRelativeUri($result);
+            }
         }
         if ($this->addTstampToAssets) {
             $matches = array();
             if (preg_match('/(.*)\.(gif|png|jpg)$/i', $result, $matches)) {
                 $result = $matches[1] . '.' . $this->getVersionKey() . '.' . $matches[2];
+            }
+
+            if ($this->cssProtocolRelativeUris) {
+                $result = $this->convertToProtocolRelativeUri($result);
             }
         }
 
