@@ -199,6 +199,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
      */
     protected function generateMergedUrl($type, array $files, $targetDir, $targetFilename)
     {
+        Varien_Profiler::start('generateMergedUrl: ' . $type);
         $targetFilename = $this->getProtocolSpecificTargetFileName($targetFilename);
         $path = $targetDir . DS . $targetFilename;
 
@@ -239,7 +240,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
                 Mage::throwException('Unsupported storage mode');
                 break;
         }
-
+        Varien_Profiler::stop('generateMergedUrl: ' . $type);
         return $mergedUrl;
     }
 
