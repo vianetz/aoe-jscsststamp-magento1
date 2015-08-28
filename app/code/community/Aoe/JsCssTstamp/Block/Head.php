@@ -105,6 +105,68 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
     }
 
     /**
+     * Add External JS
+     * convenience method
+     *
+     * @param string $name
+     * @param string $params
+     * @param string $if
+     * @param string $cond
+     *
+     * @return $this
+     */
+    public function addExtJs($name, $params = "", $if = null, $cond = null)
+    {
+        $this->addItem('ext_js', $name, $params, $if, $cond);
+
+        return $this;
+    }
+
+    /**
+     * Add External CSS
+     * convenience method
+     *
+     * @param string $name
+     * @param string $params
+     * @param string $if
+     * @param string $cond
+     *
+     * @return $this
+     */
+    public function addExtCss($name, $params = "", $if = null, $cond = null)
+    {
+        $this->addItem('ext_css', $name, $params, $if, $cond);
+
+        return $this;
+    }
+
+    /**
+     * Classify HTML head item and queue it into "lines" array
+     *
+     * @param array  &$lines
+     * @param string $itemIf
+     * @param string $itemType
+     * @param string $itemParams
+     * @param string $itemName
+     * @param array  $itemThe
+     */
+    protected function _separateOtherHtmlHeadElements(&$lines, $itemIf, $itemType, $itemParams, $itemName, $itemThe)
+    {
+        parent::_separateOtherHtmlHeadElements($lines, $itemIf, $itemType, $itemParams, $itemName, $itemThe);
+
+        $params = $itemParams ? ' ' . $itemParams : '';
+        $href = $itemName;
+        switch ($itemType) {
+            case 'ext_js':
+                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"%s></script>', $href, $params);
+                break;
+            case 'ext_css':
+                $lines[$itemIf]['other'][] = sprintf('<link rel="stylesheet" type="text/css" href="%s"%s />', $href, $params);
+                break;
+        }
+    }
+
+    /**
      * Merge static and skin files of the same format into 1 set of HEAD directives or even into 1 directive
      *
      * Will attempt to merge into 1 directive, if merging callback is provided. In this case it will generate
