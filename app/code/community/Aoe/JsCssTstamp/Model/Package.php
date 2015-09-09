@@ -218,7 +218,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
                  * Using the file system to store the file
                  */
                 if (!$coreHelper->mergeFiles($files, $path, false, array($this, 'beforeMerge' . ucfirst($type)), $type)) {
-                    Mage::throwException("Error while merging {$type} files to path: " . $relativePath);
+                    Mage::throwException("Error while merging {$type} files " . print_r($files, true) . " to path: " . $relativePath);
                 }
                 break;
             case Aoe_JsCssTstamp_Model_System_Config_Source_Storage::DATABASE:
@@ -231,7 +231,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
                 $dbStorage = $this->getDbStorage();
                 if (!$dbStorage->fileExists($relativePath)) {
                     if (!$coreHelper->mergeFiles($files, $path, false, array($this, 'beforeMerge' . ucfirst($type)), $type)) {
-                        Mage::throwException("Error while merging {$type} files to path: " . $relativePath);
+                        Mage::throwException("Error while merging {$type} files " . print_r($files, true) . " to path: " . $relativePath);
                     }
                     $dbStorage->saveFile($relativePath);
                 }
