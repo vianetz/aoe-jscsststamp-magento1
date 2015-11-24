@@ -64,11 +64,13 @@
             <js>
                 <storage>file</storage>
                 <storeMinifiedJsFolder><![CDATA[minified/js]]></storeMinifiedJsFolder>
+                <createHashFromFileContent>0</createHashFromFileContent>
             </js>
             <css>
                 <storage>file</storage>
                 <addTstampToAssets>0</addTstampToAssets>
                 <storeMinifiedCssFolder><![CDATA[minified/css]]></storeMinifiedCssFolder>
+                <createHashFromFileContent>0</createHashFromFileContent>
             </css>
             <log>
                 <aoeJsCssTstampActive>1</aoeJsCssTstampActive>

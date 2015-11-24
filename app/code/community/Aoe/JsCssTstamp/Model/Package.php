@@ -35,6 +35,8 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
         $this->addTstampToAssets = Mage::getStoreConfig('dev/css/addTstampToAssets');
         $this->addTstampToAssetsCss = Mage::getStoreConfig('dev/css/addTstampToCssFiles');
         $this->addTstampToAssetsJs = Mage::getStoreConfig('dev/js/addTstampToJsFiles');
+        $this->cssCreateHashFromFileContent = Mage::getStoreConfig('dev/css/createHashFromFileContent');
+        $this->jsCreateHashFromFileContent = Mage::getStoreConfig('dev/js/createHashFromFileContent');
         $this->storeMinifiedCssFolder = rtrim(Mage::getBaseDir(), DS) . DS . trim(Mage::getStoreConfig('dev/css/storeMinifiedCssFolder'), DS);
         $this->storeMinifiedJsFolder = rtrim(Mage::getBaseDir(), DS) . DS . trim(Mage::getStoreConfig('dev/js/storeMinifiedJsFolder'), DS);
 
@@ -68,8 +70,24 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
      */
     public function getMergedJsUrl($files)
     {
-        $versionKey = $this->getVersionKey();
-        $targetFilename = md5(implode(',', $files)) . '.' . $versionKey . '.js';
+        $versionKey = '';
+        if ($this->addTstampToAssetsJs) {
+            $versionKey = '.' . $this->getVersionKey();
+        }
+
+        $hashContent = array();
+        if ($this->jsCreateHashFromFileContent) {
+            foreach ($files as $file) {
+                if (!file_exists($file)) {
+                    continue;
+                }
+                $hashContent[] = md5_file($file);
+            }
+        } else {
+            $hashContent = $files;
+        }
+
+        $targetFilename = md5(implode(',', $hashContent)) . $versionKey . '.js';
         $targetDir = $this->_initMergerDir('js');
         if (!$targetDir) {
             return '';
@@ -98,7 +116,8 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
             $contents = $minContent;
         }
 
-        $contents = "\n\n/* FILE: " . basename($file) . " */\n" . $contents;
+        $handles = Mage::app()->getLayout()->getUpdate()->getHandles();
+        $contents = "\n\n/* FILE: " . basename($file) . " */\n/* HANDLES: " . implode(",", $handles) . " */\n" . $contents;
 
         return $contents;
     }
@@ -118,7 +137,8 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
             $contents = $minContent;
         }
 
-        $contents = "\n\n/* FILE: " . basename($file) . " */\n" . $contents;
+        $handles = Mage::app()->getLayout()->getUpdate()->getHandles();
+        $contents = "\n\n/* FILE: " . basename($file) . " */\n/* HANDLES: " . implode(",", $handles) . " */\n" . $contents;
 
         return parent::beforeMergeCss($file, $contents);
     }
@@ -172,8 +192,24 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
      */
     public function getMergedCssUrl($files)
     {
-        $versionKey = $this->getVersionKey();
-        $targetFilename = md5(implode(',', $files)) . '.' . $versionKey . '.css';
+        $versionKey = '';
+        if ($this->addTstampToAssetsCss) {
+            $versionKey = '.' . $this->getVersionKey();
+        }
+
+        $hashContent = array();
+        if ($this->cssCreateHashFromFileContent) {
+            foreach ($files as $file) {
+                if (!file_exists($file)) {
+                    continue;
+                }
+                $hashContent[] = md5_file($file);
+            }
+        } else {
+            $hashContent = $files;
+        }
+
+        $targetFilename = md5(implode(',', $hashContent)) . $versionKey . '.css';
         $targetDir = $this->_initMergerDir('css');
         if (!$targetDir) {
             return '';
