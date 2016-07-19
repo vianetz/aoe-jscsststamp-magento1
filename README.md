@@ -1,6 +1,6 @@
 # AOE_JsCssTimestamp
 
-[![Build Status](https://travis-ci.org/AOEpeople/Aoe_Scheduler.svg)](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
+[![Build Status](https://travis-ci.org/AOEpeople/Aoe_JsCssTstamp.svg)](https://travis-ci.org/AOEpeople/Aoe_JsCssTstamp)
 
 Author: [Fabrizio Branca](https://twitter.com/fbrnc)
 
