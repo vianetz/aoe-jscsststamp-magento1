@@ -20,6 +20,15 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
         if (!isset($this->_data['items'])) {
             return '';
         }
+
+        uasort(
+            $this->_data['items'],
+            function($a, $b) {
+                if ($a == $b) return 0;
+                return $a['prio'] > $b['prio'] ? 1 : -1;
+            }
+        );
+
         return parent::getCssJsHtml();
     }
 
@@ -70,6 +79,42 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
         // restore items
         $this->_data['items'] = $backupItems;
         return $html;
+    }
+
+    /**
+     * Add HEAD Item
+     *
+     * Allowed types:
+     *  - js
+     *  - js_css
+     *  - skin_js
+     *  - skin_css
+     *  - ext_js
+     *  - ext_css
+     *  - rss
+     *
+     * @param string $type
+     * @param string $name
+     * @param string $params
+     * @param string $if
+     * @param string $cond
+     * @param integer $prio
+     * @return Mage_Page_Block_Html_Head
+     */
+    public function addItem($type, $name, $params = null, $if = null, $cond = null, $prio = 50)
+    {
+        if ($type === 'skin_css' && empty($params)) {
+            $params = 'media="all"';
+        }
+        $this->_data['items'][$type . '/' . $name] = [
+            'type'   => $type,
+            'name'   => $name,
+            'params' => $params,
+            'if'     => (bool) $if ? $if : null,
+            'cond'   => (bool) $cond ? $cond : null,
+            'prio'   => $prio ? $prio : 50
+        ];
+        return $this;
     }
 
     /**
