@@ -20,6 +20,9 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
     protected $addTstampToAssets;
     protected $addTstampToAssetsCss;
     protected $addTstampToAssetsJs;
+    protected $cssCreateHashFromFileContent;
+    protected $jsCreateHashFromFileContent;
+    protected $cssAddStoreIdToHash;
     protected $storeMinifiedCssFolder;
     protected $storeMinifiedJsFolder;
 
@@ -37,6 +40,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
         $this->addTstampToAssetsJs = Mage::getStoreConfig('dev/js/addTstampToJsFiles');
         $this->cssCreateHashFromFileContent = Mage::getStoreConfig('dev/css/createHashFromFileContent');
         $this->jsCreateHashFromFileContent = Mage::getStoreConfig('dev/js/createHashFromFileContent');
+        $this->cssAddStoreIdToHash = Mage::getStoreConfig('dev/css/addStoreIdToHash');
         $this->storeMinifiedCssFolder = rtrim(Mage::getBaseDir(), DS) . DS . trim(Mage::getStoreConfig('dev/css/storeMinifiedCssFolder'), DS);
         $this->storeMinifiedJsFolder = rtrim(Mage::getBaseDir(), DS) . DS . trim(Mage::getStoreConfig('dev/js/storeMinifiedJsFolder'), DS);
 
@@ -207,6 +211,10 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
             }
         } else {
             $hashContent = $files;
+        }
+
+        if ($this->cssAddStoreIdToHash) {
+            array_push($hashContent, $this->getStore()->getId());
         }
 
         $targetFilename = md5(implode(',', $hashContent)) . $versionKey . '.css';
