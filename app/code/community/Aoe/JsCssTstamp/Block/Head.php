@@ -8,6 +8,12 @@
  */
 class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
 {
+    const DEFAULT_PRIO = 50;
+
+    /**
+     * @var bool
+     */
+    protected $_sortAssets = false;
 
     /**
      * Get HEAD HTML with CSS/JS/RSS definitions
@@ -21,13 +27,16 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
             return '';
         }
 
-        uasort(
-            $this->_data['items'],
-            function($a, $b) {
-                if ($a == $b) return 0;
-                return $a['prio'] > $b['prio'] ? 1 : -1;
-            }
-        );
+        if ($this->_sortAssets) {
+            uasort(
+                $this->_data['items'],
+                function($a, $b) {
+                    if ($a == $b) return 0;
+                    return $a['prio'] > $b['prio'] ? 1 : -1;
+                }
+            );
+        }
+
 
         return parent::getCssJsHtml();
     }
@@ -101,7 +110,7 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
      * @param integer $prio
      * @return Mage_Page_Block_Html_Head
      */
-    public function addItem($type, $name, $params = null, $if = null, $cond = null, $prio = 50)
+    public function addItem($type, $name, $params = null, $if = null, $cond = null, $prio = self::DEFAULT_PRIO)
     {
         if ($type === 'skin_css' && empty($params)) {
             $params = 'media="all"';
@@ -112,8 +121,13 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
             'params' => $params,
             'if'     => (bool) $if ? $if : null,
             'cond'   => (bool) $cond ? $cond : null,
-            'prio'   => $prio ? $prio : 50
+            'prio'   => $prio ? (int) $prio : self::DEFAULT_PRIO
         ];
+
+        if ($prio != self::DEFAULT_PRIO) {
+            $this->_sortAssets = true;
+        }
+
         return $this;
     }
 
