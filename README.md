@@ -73,6 +73,21 @@ rewrite "^/(.*)\.(\d{10})\.(gif|png|jpg)$" /$1.$3 last;
 
 ## Release notes
 
+#### v0.8.0
+
+- Added system configuration setting to take store id's into account when generating the filename hash
+- Added configuration to sort assets by priorities:
+```
+<action method="addItem">
+    <type>skin_js</type>
+    <name>js/app.js</name>
+    <params/>
+    <if/>
+    <cond/>
+    <prio>100</prio>
+</action>
+```
+
 #### v0.7.1
 
 - added unit tests
