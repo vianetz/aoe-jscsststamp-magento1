@@ -37,7 +37,7 @@ class Aoe_JsCssTstamp_Test_Config_DefaultMerged extends EcomDev_PHPUnit_Test_Cas
         $this->assertNotContains('js/opcheckout.js', $html);
 
         $matches = array();
-        $result = preg_match('/\/media\/js\/[u|s]\.[a-f0-9]{32}\.[0-9]{10}\.js/', $html, $matches);
+        $result = preg_match('/\/media\/js\/[u|s]\.[a-f0-9]{32}\.js/', $html, $matches);
         $this->assertEquals(1, $result);
 
         $file = Mage::getBaseDir() . $matches[0];
