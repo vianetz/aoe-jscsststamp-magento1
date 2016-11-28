@@ -73,6 +73,10 @@ rewrite "^/(.*)\.(\d{10})\.(gif|png|jpg)$" /$1.$3 last;
 
 ## Release notes
 
+#### v0.8.1
+
+- Use adding sequence for sorting items without given prio
+
 #### v0.8.0
 
 - Added system configuration setting to take store id's into account when generating the filename hash
