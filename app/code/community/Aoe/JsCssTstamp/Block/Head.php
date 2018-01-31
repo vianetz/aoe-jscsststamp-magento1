@@ -265,6 +265,7 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
     protected function &_prepareStaticAndSkinElements($format, array $staticItems, array $skinItems, $mergeCallback = null)
     {
         $designPackage = Mage::getDesign();
+        $versionKey = $designPackage->getVersionKey();
         $baseJsUrl = Mage::getBaseUrl('js');
         $items = array();
         if ($mergeCallback && !is_callable($mergeCallback)) {
@@ -281,8 +282,16 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
                 'urls' => array(),
             );
             foreach ($rows as $name) {
-                $items[$params]['files'][] = Mage::getBaseDir() . DS . 'js' . DS . $name;
-                $items[$params]['urls'][] = $baseJsUrl . $name;
+                $file = Mage::getBaseDir() . DS . 'js' . DS . $name;
+                if ($designPackage->getAddTstampToAssetsJs()) {
+                    $matches = array();
+                    if (preg_match('/(.*)\.(js)$/i', $name, $matches)) {
+                        $name = $matches[1] . '.' . $versionKey . '.' . $matches[2];
+                    }
+                }
+                $url = $baseJsUrl . $name;
+                $items[$params]['files'][] = $file;
+                $items[$params]['urls'][] = $url;
             }
         }
 

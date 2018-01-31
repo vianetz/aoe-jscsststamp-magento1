@@ -293,7 +293,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
      *
      * @return int timestamp
      */
-    protected function getVersionKey()
+    public function getVersionKey()
     {
         $timestamp = Mage::app()->loadCache(self::CACHEKEY);
         if (empty($timestamp)) {
@@ -302,6 +302,11 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
         }
 
         return $timestamp;
+    }
+
+    public function getAddTstampToAssetsJs()
+    {
+        return $this->addTstampToAssetsJs;
     }
 
     /**
