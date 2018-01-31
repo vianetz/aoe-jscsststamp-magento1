@@ -33,6 +33,11 @@
                     <html_head>Aoe_JsCssTstamp_Block_Head</html_head>
                 </rewrite>
             </page>
+            <adminhtml>
+                <rewrite>
+                    <page_head>Aoe_JsCssTstamp_Block_Adminhtml_Page_Head</page_head>
+                </rewrite>
+            </adminhtml>
         </blocks>
 
         <events>
