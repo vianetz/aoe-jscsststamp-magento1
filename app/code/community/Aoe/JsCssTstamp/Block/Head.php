@@ -344,7 +344,6 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
             $defaultItem = $items[''];
             unset($items['']);
             ksort($items);
-            $items = array_values($items);
             array_push($reorderedItems, $defaultItem);
             $reorderedItems = array_merge($reorderedItems, $items);
             return $reorderedItems;
