@@ -1,14 +1,11 @@
 <?php
 
-// the ugliest hack to resolve class rewrite conflict with Aoe_DesignFallback without adding dependency on it
-class Aoe_DesignFallback_Model_Design_Package extends Mage_Core_Model_Design_Package { }
-
 /**
  * Rewriting package class to add some custom version key to bundled files
  *
  * @author Fabrizio Branca
  */
-class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Package
+class Aoe_JsCssTstamp_Model_Package extends Mage_Core_Model_Design_Package
 {
     const CACHEKEY = 'aoe_jscsststamp_versionkey';
 
@@ -99,23 +96,17 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
         return $mergedJsUrl;
     }
 
-    /**
-     * Before merge JS callback function
-     *
-     * @param string $file
-     * @param string $contents
-     *
-     * @return string
-     */
-    public function beforeMergeJs($file, $contents)
+    public function beforeMergeJs(string $file, string $contents): string
     {
         $minContent = $this->useMinifiedVersion($file);
         if ($minContent !== false) {
             $contents = $minContent;
         }
 
-        $handles = Mage::app()->getLayout()->getUpdate()->getHandles();
-        $contents = "\n\n/* FILE: " . basename($file) . " */\n/* HANDLES: " . implode(",", $handles) . " */\n" . $contents;
+        if (Mage::getIsDeveloperMode()) {
+            $handles = Mage::app()->getLayout()->getUpdate()->getHandles();
+            $contents = PHP_EOL . PHP_EOL . "/* FILE: " . basename($file) . " */" . PHP_EOL . "/* HANDLES: " . implode(",", $handles) . " */" . PHP_EOL . $contents;
+        }
 
         return $contents;
     }
@@ -135,47 +126,39 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
             $contents = $minContent;
         }
 
-        $handles = Mage::app()->getLayout()->getUpdate()->getHandles();
-        $contents = "\n\n/* FILE: " . basename($file) . " */\n/* HANDLES: " . implode(",", $handles) . " */\n" . $contents;
+        if (Mage::getIsDeveloperMode()) {
+            $handles = Mage::app()->getLayout()->getUpdate()->getHandles();
+            $contents = PHP_EOL . PHP_EOL . "/* FILE: " . basename($file) . " */" . PHP_EOL . "/* HANDLES: " . implode(",", $handles) . " */" . PHP_EOL . $contents;
+        }
 
         return parent::beforeMergeCss($file, $contents);
     }
 
     /**
      * Checks if minified version of the given file exist. And if returns its content
-     *
-     * @param string $file
-     * @return string|false the content of the file else false
      */
-    protected function useMinifiedVersion($file)
+    protected function useMinifiedVersion(string $file): string|false
     {
         $parts = pathinfo($file);
         // Add .min to the extension of the original filename
         $minFile = $parts['dirname'] . DS . $parts['filename'] . '.min.' . $parts['extension'];
 
         if (file_exists($minFile)) {
-            // return the content of the min file @see Mage_Core_Helper_Data -> mergeFiles()
-            return file_get_contents($minFile) . "\n";
-        } else {
-            $pathRelativeToBase = str_replace(Mage::getBaseDir(), '', $parts['dirname']);
-            $pathRelativeToBase = ltrim($pathRelativeToBase, DS);
+            /** return the content of the min file {@see Mage_Core_Helper_Data::mergeFiles()} */
+            return file_get_contents($minFile) . PHP_EOL;
+        }
 
-            switch ($parts['extension']) {
-                case 'js':
-                    $minFile = $this->storeMinifiedJsFolder . DS . $pathRelativeToBase
-                        . DS . $parts['filename'] . '.min.' . $parts['extension'];
-                    break;
-                case 'css':
-                default:
-                    $minFile = $this->storeMinifiedCssFolder . DS . $pathRelativeToBase
-                        . DS . $parts['filename'] . '.min.' . $parts['extension'];
-                    break;
-            }
+        $pathRelativeToBase = str_replace(Mage::getBaseDir(), '', $parts['dirname']);
+        $pathRelativeToBase = ltrim($pathRelativeToBase, DS);
 
-            if (file_exists($minFile)) {
-                // return the content of the min file @see Mage_Core_Helper_Data -> mergeFiles()
-                return file_get_contents($minFile) . "\n";
-            }
+        $minFile = match ($parts['extension']) {
+            'js' => $this->storeMinifiedJsFolder . DS . $pathRelativeToBase . DS . $parts['filename'] . '.min.' . $parts['extension'],
+            default => $this->storeMinifiedCssFolder . DS . $pathRelativeToBase . DS . $parts['filename'] . '.min.' . $parts['extension'],
+        };
+
+        if (file_exists($minFile)) {
+            /** return the content of the min file {@see Mage_Core_Helper_Data::mergeFiles()} */
+            return file_get_contents($minFile) . PHP_EOL;
         }
 
         return false;
@@ -228,14 +211,9 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
     /**
      * Generate url for merged file of given $type
      *
-     * @param string $type
-     * @param array $files
-     * @param string $targetDir
-     * @param string $targetFilename
-     *
-     * @return string
+     * @param array<string> $files
      */
-    protected function generateMergedUrl($type, array $files, $targetDir, $targetFilename)
+    protected function generateMergedUrl(string $type, array $files, string $targetDir, string $targetFilename): string
     {
         Varien_Profiler::start('generateMergedUrl: ' . $type);
         $targetFilename = $this->getProtocolSpecificTargetFileName($targetFilename);
@@ -279,6 +257,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
                 break;
         }
         Varien_Profiler::stop('generateMergedUrl: ' . $type);
+
         return $mergedUrl;
     }
 
@@ -287,7 +266,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
      *
      * @return int timestamp
      */
-    public function getVersionKey()
+    public function getVersionKey(): int
     {
         $timestamp = Mage::app()->loadCache(self::CACHEKEY);
         if (empty($timestamp)) {
@@ -306,11 +285,8 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
     /**
      * Convert uri to protocol independent uri
      * E.g. http://example.com -> //example.com
-     *
-     * @param string $uri
-     * @return string
      */
-    protected function convertToProtocolRelativeUri($uri)
+    protected function convertToProtocolRelativeUri(string $uri): string
     {
         return preg_replace('/^https?:/i', '', $uri);
     }
@@ -344,11 +320,8 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
 
     /**
      * This is to fix the secure/unsecure URL problem
-     *
-     * @param string $targetFilename
-     * @return string
      */
-    protected function getProtocolSpecificTargetFileName($targetFilename)
+    protected function getProtocolSpecificTargetFileName(string $targetFilename): string
     {
         $store = $this->getStore();
         if ($store->isAdmin()) {
