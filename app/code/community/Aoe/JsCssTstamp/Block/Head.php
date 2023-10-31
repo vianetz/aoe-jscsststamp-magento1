@@ -356,10 +356,17 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
         return $items;
     }
 
-    private function calculateSri(string $relativeFileName, string $algo = 'sha256'): string
+    private function calculateSri(string $fileUrl, string $algo = 'sha256'): string
     {
+        $file = '';
+        foreach (['media', 'skin'] as $type) {
+            if (str_starts_with($fileUrl, Mage::getBaseUrl($type))) {
+                $file = Mage::getBaseDir($type) . DS . str_replace(Mage::getBaseUrl($type), '', $fileUrl);
+                break;
+            }
+        }
+
         $sri = '';
-        $file = Mage::getBaseDir('media') . DS . str_replace(Mage::getBaseUrl('media'), '', $relativeFileName);
         if (is_file($file)) {
             $sri = $algo . '-' . base64_encode(hash_file($algo, $file, true));
         }
