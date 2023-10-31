@@ -1,9 +1,7 @@
 <?php
 
 // the ugliest hack to resolve class rewrite conflict with Aoe_DesignFallback without adding dependency on it
-if (!Mage::helper('aoejscsststamp')->isModuleEnabled('Aoe_DesignFallback')) {
-    class Aoe_DesignFallback_Model_Design_Package extends Mage_Core_Model_Design_Package { }
-}
+class Aoe_DesignFallback_Model_Design_Package extends Mage_Core_Model_Design_Package { }
 
 /**
  * Rewriting package class to add some custom version key to bundled files
@@ -44,11 +42,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
         $this->storeMinifiedCssFolder = rtrim(Mage::getBaseDir(), DS) . DS . trim(Mage::getStoreConfig('dev/css/storeMinifiedCssFolder'), DS);
         $this->storeMinifiedJsFolder = rtrim(Mage::getBaseDir(), DS) . DS . trim(Mage::getStoreConfig('dev/js/storeMinifiedJsFolder'), DS);
 
-        // is_callable is aware of context, and you can ask it things like parent::__construct from within
-        // a child constructor, see http://php.net/manual/en/function.is-callable.php#104632
-        if (is_callable('parent::__construct')) {
-            parent::__construct();
-        }
+        parent::__construct();
     }
 
     /**
@@ -151,7 +145,7 @@ class Aoe_JsCssTstamp_Model_Package extends Aoe_DesignFallback_Model_Design_Pack
      * Checks if minified version of the given file exist. And if returns its content
      *
      * @param string $file
-     * @return string|bool the content of the file else false
+     * @return string|false the content of the file else false
      */
     protected function useMinifiedVersion($file)
     {

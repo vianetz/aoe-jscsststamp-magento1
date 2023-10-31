@@ -133,8 +133,11 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
      * @param integer $prio
      * @return Mage_Page_Block_Html_Head
      */
-    public function addItem($type, $name, $params = null, $if = null, $cond = null, $prio = self::DEFAULT_PRIO)
+    public function addItem($type, $name, $params = null, $if = null, $cond = null, $referenceName = "*", $before = false)
     {
+        // temporary fix for not having the function parameter available
+        $prio = self::DEFAULT_PRIO;
+
         if ($type === 'skin_css' && empty($params)) {
             $params = 'media="all"';
         }
