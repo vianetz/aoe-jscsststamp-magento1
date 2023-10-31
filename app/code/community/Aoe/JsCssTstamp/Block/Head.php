@@ -319,14 +319,15 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
             if ($mergeCallback) {
                 $mergedUrl = call_user_func($mergeCallback, $rows['files']);
             }
+
             // render elements
             $params = trim($params);
             $params = $params ? ' ' . $params : '';
             if ($mergedUrl) {
-                $html .= sprintf($format, $mergedUrl, $params);
+                $html .= sprintf($format, $mergedUrl, $params, $this->calculateSri($mergedUrl));
             } else {
                 foreach ($rows['urls'] as $src) {
-                    $html .= sprintf($format, $src, $params);
+                    $html .= sprintf($format, $src, $params, $this->calculateSri($src));
                 }
             }
         }
@@ -353,5 +354,16 @@ class Aoe_JsCssTstamp_Block_Head extends Mage_Page_Block_Html_Head
         }
 
         return $items;
+    }
+
+    private function calculateSri(string $relativeFileName, string $algo = 'sha256'): string
+    {
+        $sri = '';
+        $file = Mage::getBaseDir('media') . DS . str_replace(Mage::getBaseUrl('media'), '', $relativeFileName);
+        if (is_file($file)) {
+            $sri = $algo . '-' . base64_encode(hash_file($algo, $file, true));
+        }
+
+        return $sri;
     }
 }
